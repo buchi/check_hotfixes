@@ -2,7 +2,7 @@
 #
 # Check Plone installations for hotfixes.
 # Command to download and run this script:
-# python -c "import urllib; exec urllib.urlopen('https://gist.github.com/buchi/5743650/raw/8c71d1f2b9ace73f9f4f7b36a452d62f6e6be9a1/check_hotfixes.py').read()"
+# python -c "import urllib; exec urllib.urlopen('https://raw.github.com/buchi/check_hotfixes/master/check_hotfixes.py').read()"
 
 import subprocess
 import os.path
