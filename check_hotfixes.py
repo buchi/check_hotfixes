@@ -15,6 +15,7 @@ def locate_instances():
     out, err = process.communicate()
     if process.returncode == 0:
         return [line for line in out.split('\n') if line.strip()]
+    return []
 
 def locate_zopectl():
     process = subprocess.Popen(['locate', '*/bin/zopectl'],
@@ -22,6 +23,7 @@ def locate_zopectl():
     out, err = process.communicate()
     if process.returncode == 0:
         return [line for line in out.split('\n') if line.strip()]
+    return []
 
 def search_egg(name, instance):
     """If an egg with the given name is found return it's version."""
