@@ -63,6 +63,8 @@ products_pattern = re.compile(r'products ')
 def search_product(name, zope_conf):
     # Get product folders from zope.conf
     product_folders = []
+    # Default products folder
+    product_folders.append('/'.join(zope_conf.split('/')[:-2]) + '/Products')
     if os.path.exists(zope_conf):
         for line in open(zope_conf, 'rb'):
             if line.lstrip().startswith('products'):
