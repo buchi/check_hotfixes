@@ -54,7 +54,7 @@ def main():
     for instance in instances:
         plone_version = search_egg('Plone', instance)
         zope2_instance = search_egg('plone.recipe.zope2instance', instance)
-        if zope2_instance is not None:
+        if plone_version is None and zope2_instance is not None:
             plone_version = "<3.2"
 
         if plone_version is None:
