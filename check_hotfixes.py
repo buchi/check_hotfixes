@@ -98,7 +98,7 @@ def main():
     for zopectl in zopectls:
         if '/'.join(zopectl.split('/')[:-4]) not in instance_bases:
             instances.append(zopectl)
-    for instance in instances:
+    for instance in sorted(instances):
         plone_version = search_egg('Plone', instance)
         zope_conf = search_zope_conf(instance)
 
