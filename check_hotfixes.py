@@ -2,7 +2,7 @@
 #
 # Check Plone installations for hotfixes.
 # Command to download and run this script:
-# python -c "import urllib; exec urllib.urlopen('https://raw.github.com/buchi/check_hotfixes/master/check_hotfixes.py').read()"
+# python -c "import urllib; exec urllib.urlopen('https://gist.github.com/buchi/5743650/raw/8c71d1f2b9ace73f9f4f7b36a452d62f6e6be9a1/check_hotfixes.py').read()"
 
 import subprocess
 import os.path
@@ -49,14 +49,57 @@ def search_egg(name, instance):
     return None
 
 
+zope_conf_pattern = re.compile(r'/[^\"\']*zope.conf')
+def search_zope_conf(instance):
+    if os.path.exists(instance):
+        for line in open(instance, 'rb'):
+            if 'etc/zope.conf' in line:
+                match = zope_conf_pattern.search(line)
+                if match:
+                    return match.group(0)
+    return None
+
+products_pattern = re.compile(r'products ')
+def search_product(name, zope_conf):
+    # Get product folders from zope.conf
+    product_folders = []
+    if os.path.exists(zope_conf):
+        for line in open(zope_conf, 'rb'):
+            if line.lstrip().startswith('products'):
+                product_line = line.strip().split()
+                if len(product_line) > 1:
+                    product_folders.append(product_line[1])
+
+    # Scan product folders for product
+    if name == 'Plone':
+        name = 'CMFPlone'
+    if name.startswith('Products.'):
+        name = name[9:]
+    
+    for folder in product_folders:
+        if os.path.isdir(folder):
+            for item in os.listdir(folder):
+                if item == name:
+                    version = read_product_version(os.path.join(folder, item))
+                    return version
+    return None
+
+def read_product_version(product):
+    version = '0.0'
+    version_file = os.path.join(product, 'version.txt')
+    if os.path.exists(version_file):
+        version = open(version_file, 'rb').read().strip()
+    return version
+
 def main():
     instances = locate_instances()
     for instance in instances:
         plone_version = search_egg('Plone', instance)
-        zope2_instance = search_egg('plone.recipe.zope2instance', instance)
-        if plone_version is None and zope2_instance is not None:
-            plone_version = "<3.2"
+        zope_conf = search_zope_conf(instance)
 
+        if plone_version is None and zope_conf is not None:
+            plone_version = search_product('Plone', zope_conf)
+            
         if plone_version is None:
             print "%s: No Plone installation detected." % instance
             continue
@@ -66,12 +109,18 @@ def main():
             for version in versions:
                 iversion = search_egg(version[0], instance)
                 if iversion is None:
+                    iversion = search_product(version[0], zope_conf)
+                if iversion is None:
                     continue
                 if (NormalizedVersion(iversion) >= NormalizedVersion(version[1]) and 
                     NormalizedVersion(iversion) <= NormalizedVersion(version[2])):
                     installed = search_egg(hotfix[0], instance)
                     if installed is None:
+                        installed = search_product(hotfix[0], zope_conf)
+                    if installed is None:
                         print "%s ***** MISSING *****" % hotfix[0]
+                    elif installed == '0.0':
+                        print "%s unkown version installed." % hotfix[0]
                     elif NormalizedVersion(installed)<NormalizedVersion(hotfix[1]):
                         print "%s %s ***** needs update to %s *****" % (hotfix[0], installed, hotfix[1])
                     else:
