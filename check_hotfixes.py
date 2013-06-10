@@ -93,6 +93,11 @@ def read_product_version(product):
 
 def main():
     instances = locate_instances()
+    instance_bases = ['/'.join(i.split('/')[:-2]) for i in instances]
+    zopectls = locate_zopectl()
+    for zopectl in zopectls:
+        if '/'.join(zopectl.split('/')[:-4]) not in instance_bases:
+            instances.append(zopectl)
     for instance in instances:
         plone_version = search_egg('Plone', instance)
         zope_conf = search_zope_conf(instance)
