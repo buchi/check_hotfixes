@@ -141,6 +141,7 @@ HOTFIXES = {
     ('Products.PloneHotfix20110928', '1.0'): [('Plone', '4.0a1', '4.0.9'), ('Plone', '4.1a1', '4.1'), ('Plone', '4.2a1', '4.2a2')],
     ('Products.PloneHotfix20110720', '1.0'): [('Plone', '2.0', '4.0.3')],
     ('Products.PloneHotfix20110531', '2.0'): [('Plone', '3.0', '4.0.6'), ('Plone', '4.1a1', '4.1rc3')],
+    ('Products.PloneHotfix20130618', '1.0'): [('Plone', '2.0', '4.3')],
     ('Products.Zope_Hotfix_20111024', '1.0'): [('Plone', '4.0a1', '4.1.3'), ('Plone', '4.2a1', '4.2b1')],
     ('Products.Zope_Hotfix_CVE_2010_1104', '1.0'): [('Plone', '2.1', '3.3.2'), ('Plone', '4.0a1', '4.0a3')],
     ('Products.Zope_Hotfix_20110622', '1.0'): [('Plone', '3.0', '3.3.5'), ('Plone', '4.0a1', '4.0.7'), ('Plone', '4.1a1', '4.1rc3')],
